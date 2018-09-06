@@ -1,0 +1,46 @@
+<div class="text">{{Question}}<span id="optionTrueLabel">[ ]</span></div>
+<ol class="options" id="optionList">
+<!-- The first line in options is the correction answer. and show the options list in random order everytime. -->
+<!-- Use the ENTER character to split options. use <br> tag for next line. -->
+</ol>
+
+{{#Options}}
+<!-- Use this div to pass list data to script -->
+<div id="options" style="display:none">
+{{Options}}
+</div>
+{{/Options}}
+
+<script>
+
+// For PC: Add a global variable to pass through the data to answer side of card.
+// For ankiDroid: Use "action:userdata:" or "action:answer:" tag to do that.
+if(typeof(mc) == "undefined"){
+	var script = document.createElement('script')
+	script.innerHTML = "var mc={list:'',checked:''}"
+	document.head.appendChild(script)
+}
+showOptions()
+// Save the list.
+var optionOl = document.getElementById("optionList")
+if (typeof(py) == "undefined") {
+	// For ankidroid
+	var userdata = "action:userdata:" + "<ol class=\"options\" id=\"questionList\">" + optionOl.innerHTML + "</ol>" + "<p id=\"userChecked\"></p>"
+	document.location = userdata
+}
+else if (typeof(mc) != "undefined") {
+	// For anki in windows
+	mc.list=optionOl.innerHTML
+}
+
+</script>
+
+<!-- For debug: show the html content in runtime.
+<textarea style="width:100%;height:200px;" id="kaiwa" >_</textarea>
+<a class="test" href="#" onclick="d=document.getElementById('kaiwa');d.innerHTML=document.body.innerHTML;return false;">body</a>
+<a class="test" href="#" onclick="d=document.getElementById('kaiwa');d.innerHTML=d.parentNode.innerHTML;return false;">parent1</a>
+<a class="test" href="#" onclick="d=document.getElementById('kaiwa');d.innerHTML=d.parentNode.parentNode.innerHTML;return false;">parent2</a>
+<a class="test" href="#" onclick="d=document.getElementById('kaiwa');d.innerHTML=d.parentNode.parentNode.parentNode.innerHTML;return false;">parent3</a>
+<a class="test" href="#" onclick="d=document.getElementById('kaiwa');d.innerHTML=d.parentNode.parentNode.parentNode.parentNode.innerHTML;return false;">parent4</a>
+<a class="test" href="#" onclick="d=document.getElementById('kaiwa');d.innerHTML=d.parentNode.parentNode.parentNode.parentNode.parentNode.innerHTML;return false;">parent5</a>
+-->

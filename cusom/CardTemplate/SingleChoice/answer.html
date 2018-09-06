@@ -1,0 +1,35 @@
+<div class="text">{{Question}}[<span id = "optionTrueLabel" class="right">A</span>]</div>
+<ol class="options" id="optionList"></ol>
+
+{{#Options}}
+<!-- Use this div to pass list data to script -->
+<div id="options" style="display:none">
+{{Options}}
+</div>
+{{/Options}}
+
+<div id="userData" style="display:none">
+[[userdata:replace with the data that passed from question]]
+</div>
+
+<hr>
+{{#Extra}}
+<div class="extra">{{Extra}}</div>
+{{/Extra}}
+
+<script>
+getOptions()
+var optionTrueIndex = document.getElementById("optionTrueIndex")
+var optionTrueLabel = document.getElementById("optionTrueLabel")
+optionTrueLabel.innerHTML = optionTrueIndex.innerHTML
+</script>
+
+<!-- For debug: show the html content in runtime.
+<textarea style="width:100%;height:200px;" id="kaiwa" >_</textarea>
+<a class="test" href="#" onclick="d=document.getElementById('kaiwa');d.innerHTML=document.body.innerHTML;return false;">body</a>
+<a class="test" href="#" onclick="d=document.getElementById('kaiwa');d.innerHTML=d.parentNode.innerHTML;return false;">parent1</a>
+<a class="test" href="#" onclick="d=document.getElementById('kaiwa');d.innerHTML=d.parentNode.parentNode.innerHTML;return false;">parent2</a>
+<a class="test" href="#" onclick="d=document.getElementById('kaiwa');d.innerHTML=d.parentNode.parentNode.parentNode.innerHTML;return false;">parent3</a>
+<a class="test" href="#" onclick="d=document.getElementById('kaiwa');d.innerHTML=d.parentNode.parentNode.parentNode.parentNode.innerHTML;return false;">parent4</a>
+<a class="test" href="#" onclick="d=document.getElementById('kaiwa');d.innerHTML=d.parentNode.parentNode.parentNode.parentNode.parentNode.innerHTML;return false;">parent5</a>
+-->

@@ -1,0 +1,166 @@
+</style><!--填充Anki默认style-->
+<style>
+.card {
+	font-family: Arial;
+	font-size: 17px;
+	text-align: left;
+	color: black;
+	background-color: white;
+}
+
+div {
+	margin:5px auto
+}
+.text {
+	color:black;
+	text-align:left;
+}
+.hint {
+	color:#a6e22e;
+}
+.extra {
+	margin-top:15px;
+	font-size:16px;
+	color: black;
+	text-align:left;
+}
+.right {
+	font-weight: bold;
+	color: green;
+}
+.wrong {
+	font-weight: 400;
+	text-decoration:line-through;
+	color: red;
+}
+.options{
+	list-style:upper-latin;
+}
+.options *{
+	cursor:pointer;
+}
+.options *:hover{
+	font-weight:bold;
+}
+.options li {
+	margin-top:5px;
+}
+.options input[name="options"]{
+	display:none;
+}
+</style>
+
+<script>
+function showOptions(){
+	var optionOl=document.getElementById("optionList")
+	var options=document.getElementById("options")
+	var s=0
+	var index=0
+	var indexs=[]
+	var optionList=""
+	options=options.innerHTML
+	options=options.replace(/<\/?div>/g,"\n")
+	options=options.replace(/\n+/g,"\n")
+	options=options.replace(/<br.*?>/g,"\n")
+	// Remove enter at tail.
+	options=options.replace(/^\n/,"")
+	options=options.replace(/\n$/,"")
+	// Get the array of options.
+	options=options.split("\n")
+	// Build random options list.
+	for(var key in options) {
+		do{
+			s=Math.random()*(options.length)
+			s=Math.floor(s)
+			if(indexs.join().indexOf(s.toString())==-1) {
+				indexs.push(s)
+				break
+			}
+		} while(true)
+
+		if (s == 0) {
+			optionList += "<li id='optionTrue'>" + "<span id=\"optionTrueIndex\" style=\"display:none\">" + String.fromCharCode(0x41 + index) + "</span>"+"<label for=option" + s + " >" + options[s] + "</label>" + "<input onclick='showAns(this)' type='radio' name='options'id=option" + s + " />" + "</li>"
+		}
+		else {
+			optionList += "<li>" + "<label for=option" + s + " >" + options[s] + "</label>" + "<input type='radio' onclick='showAns(this)' name='options' id=option" + s + " />" + "</li>"
+		}
+		index++
+	}
+	
+	optionOl.innerHTML = optionList
+}
+
+function showAns(radio){
+	var optionOl = document.getElementById("optionList")
+
+	if (typeof(py) == "undefined") {
+		// For ankidroid: Pass the options list and user's selection to answer side of card.
+		var userdata = "<ol class=\"options\" id=\"questionList\">" + optionOl.innerHTML + "</ol>" + "<p id=\"userChecked\">" + radio.id + "</p>"
+		document.location = "action:answer:" + userdata
+	}
+	else {
+		// For anki in windows
+		if (typeof(mc) == "undefined") return
+		mc.list = optionOl.innerHTML
+		mc.checked = radio.id
+
+
+		// For anki in windows:
+		try {
+			py.link("ansHack")
+		}
+		catch(e) {
+		}
+	}
+}
+
+// Get the data which passed form question side of card.
+function getOptions(){
+	// Option list in question side.
+	var questionList = document.getElementById("questionList")
+	// The optionid that user selected in question side.
+	var userChecked = document.getElementById("userChecked")
+	// The order of options should same as in question side.
+	var optionOl=document.getElementById("optionList")
+
+	// For ankiDroid
+	if (typeof(py) == "undefined" &&
+		(typeof(questionList) != "undefined") && (questionList != null) &&
+		(typeof(userChecked) != "undefined") && (userChecked != null)) {
+		// Restore list
+		optionOl.innerHTML = questionList.innerHTML;
+
+		// Mark the selected option, default as wrong.
+		if (userChecked.innerHTML) {
+			var optionChecked = document.getElementById(userChecked.innerHTML)
+			optionChecked.parentNode.className = "wrong"
+			optionChecked.checked = true
+		}
+	}
+	// For anki in windows
+	else if (typeof(mc) != "undefined" ) {
+		// Restore list
+		optionOl.innerHTML = mc.list
+
+		// Mark the selected option, default as wrong.
+		if (mc.checked) {
+			var optionChecked=document.getElementById(mc.checked)
+			optionChecked.parentNode.className = "wrong" 
+			optionChecked.checked = true
+			mc.checked = ''
+		}
+	}
+	// For preview
+	else {
+		showOptions()
+	}
+
+	// Highlight the right option.
+	var optionTrue=document.getElementById("optionTrue")
+	optionTrue.className = "right" 
+	var radios=document.getElementsByName("options")
+	for(var i in radios) {
+		radios[i].disabled = true
+	}
+}
+</script>
