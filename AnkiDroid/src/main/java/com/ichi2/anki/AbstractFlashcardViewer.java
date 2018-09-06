@@ -162,6 +162,10 @@ public abstract class AbstractFlashcardViewer extends NavigationDrawerActivity {
     private static final Pattern sTypeAnsPat = Pattern.compile("\\[\\[type:(.+?)\\]\\]");
     private static final Pattern sTypeAnsTyped = Pattern.compile("typed=([^&]*)");
 
+    // + ZhongYH: answer data patterns
+    private static final Pattern sUserDataPat = Pattern.compile("\\[\\[userdata:(.+?)\\]\\]");
+    // -
+
     /** to be sent to and from the card editor */
     private static Card sEditorCard;
 
@@ -211,6 +215,10 @@ public abstract class AbstractFlashcardViewer extends NavigationDrawerActivity {
     private String mTypeFont = "";  // Font face of the compare to field
     private int mTypeSize = 0;  // Its font size
     private String mTypeWarning;
+
+    // + ZhongYH
+    private String mUserData = "";
+    // -
 
     private boolean mIsSelecting = false;
     private boolean mTouchStarted = false;
@@ -746,6 +754,17 @@ public abstract class AbstractFlashcardViewer extends NavigationDrawerActivity {
         return m.replaceAll(sb.toString());
     }
 
+    /**
+     * ZhongYH: Fill the placeholder for the user date that pass to answer.
+     *
+     * @param buf The answer text
+     * @param answerData Text pass by question
+     * @return The formatted answer text
+     */
+    private String userDataAnswerFilter(String buf, String answerData) {
+        Matcher m = sUserDataPat.matcher(buf);
+        return m.replaceAll(answerData);
+    }
 
     /**
      * Return the correct answer to use for {{type::cloze::NN}} fields.
@@ -1469,6 +1488,74 @@ public abstract class AbstractFlashcardViewer extends NavigationDrawerActivity {
                     mFlipCardLayout.setVisibility(View.GONE);
                     return true;
                 }
+                // ZhongYH: Custom self
+                if (url.indexOf("action:") == 0) {
+                    String actionName = URLDecoder.decode(url.replaceFirst("action:", ""));
+                    if ("answer".equals(actionName)) {
+                        mFlipCardLayout.performClick();
+                    }
+                    else if (actionName.indexOf("answer:") == 0) {
+                        mUserData  = actionName.replaceFirst("answer:", "");
+                        mFlipCardLayout.performClick();
+                    }
+                    else if (actionName.indexOf("userdata:") == 0) {
+                        mUserData = actionName.replaceFirst("userdata:", "");
+                    }
+                    else if (actionName.indexOf("hide:") == 0) {
+                        String btnList[] = actionName.replaceFirst("hide:", "").split(",");
+                        for (String btnName:btnList) {
+                            if ("answer".equals(btnName)) {
+                                mFlipCardLayout.setVisibility(View.GONE);
+                            }
+                            else if ("easy1".equals(btnName)) {
+                                mEase1Layout.setVisibility(View.GONE);
+                            }
+                            else if ("easy2".equals(btnName)) {
+                                mEase2Layout.setVisibility(View.GONE);
+                            }
+                            else if ("easy3".equals(btnName)) {
+                                mEase3Layout.setVisibility(View.GONE);
+                            }
+                            else if ("easy4".equals(btnName)) {
+                                mEase4Layout.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                    else if (actionName.indexOf("show:") == 0) {
+                        String btnList[] = actionName.replaceFirst("show:", "").split(",");
+                        for (String btnName:btnList) {
+                            if ("answer".equals(btnName)) {
+                                mFlipCardLayout.setVisibility(View.INVISIBLE);
+                            }
+                            else if ("easy1".equals(btnName)) {
+                                mEase1Layout.setVisibility(View.INVISIBLE);
+                            }
+                            else if ("easy2".equals(btnName)) {
+                                mEase2Layout.setVisibility(View.INVISIBLE);
+                            }
+                            else if ("easy3".equals(btnName)) {
+                                mEase3Layout.setVisibility(View.INVISIBLE);
+                            }
+                            else if ("easy4".equals(btnName)) {
+                                mEase4Layout.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    }
+                    else if ("easy1".equals(actionName)) {
+                        answerCard(EASE_1);
+                    }
+                    else if ("easy2".equals(actionName)) {
+                        answerCard(EASE_2);
+                    }
+                    else if ("easy3".equals(actionName)) {
+                        answerCard(EASE_3);
+                    }
+                    else if ("easy4".equals(actionName)) {
+                        answerCard(EASE_4);
+                    }
+                    return true;
+                }
+                //-
                 Intent intent = null;
                 try {
                     if (url.startsWith("intent:")) {
@@ -2000,6 +2087,9 @@ public abstract class AbstractFlashcardViewer extends NavigationDrawerActivity {
         Timber.d("user answer = %s", userAnswer);
 
         answer = typeAnsAnswerFilter(answer, userAnswer, correctAnswer);
+
+        // ZhongYH: Apped answer data to answer.
+        answer = userDataAnswerFilter(answer, mUserData);
 
         mIsSelecting = false;
         updateCard(enrichWithQADiv(answer, true));
