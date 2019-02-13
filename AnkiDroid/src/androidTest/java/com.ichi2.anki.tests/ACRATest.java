@@ -3,24 +3,26 @@ package com.ichi2.anki.tests;
 import android.Manifest;
 import android.app.Instrumentation;
 import android.content.SharedPreferences;
-import android.support.test.rule.GrantPermissionRule;
-import android.support.test.runner.AndroidJUnit4;
+
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.GrantPermissionRule;
 
 import com.ichi2.anki.AnkiDroidApp;
 import com.ichi2.anki.R;
 
 import org.acra.ACRA;
+import org.acra.builder.ReportBuilder;
 import org.acra.collections.ImmutableList;
 import org.acra.config.Configuration;
 import org.acra.config.CoreConfiguration;
+import org.acra.config.LimitingReportAdministrator;
 import org.acra.config.ToastConfiguration;
-import org.json.JSONObject;
+import org.acra.data.CrashReportData;
+import org.acra.data.CrashReportDataFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import android.support.test.InstrumentationRegistry;
 
 import java.lang.reflect.Method;
 
@@ -31,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(androidx.test.ext.junit.runners.AndroidJUnit4.class)
 public class ACRATest {
 
     @Rule public GrantPermissionRule mRuntimePermissionRule =
@@ -67,7 +69,7 @@ public class ACRATest {
     public void testDebugConfiguration() throws Exception {
 
         // Debug mode overrides all saved state so no setup needed
-        setAcraConfig("Debug", AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext()));
+        setAcraConfig("Debug", AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getInstrumentation().getTargetContext()));
         assertArrayEquals("Debug logcat arguments not set correctly",
                 app.getAcraCoreConfigBuilder().build().logcatArguments().toArray(),
                 new ImmutableList<>(debugLogcatArguments).toArray());
@@ -75,13 +77,12 @@ public class ACRATest {
     }
 
     private void verifyDebugACRAPreferences() {
-        assertEquals("ACRA was not disabled correctly",
-                true,
-                AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext())
+        assertTrue("ACRA was not disabled correctly",
+                AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getInstrumentation().getTargetContext())
                         .getBoolean(ACRA.PREF_DISABLE_ACRA, true));
         assertEquals("ACRA feedback was not turned off correctly",
                 AnkiDroidApp.FEEDBACK_REPORT_NEVER,
-                AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext())
+                AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getInstrumentation().getTargetContext())
                         .getString(AnkiDroidApp.FEEDBACK_REPORT_KEY, "undefined"));
     }
 
@@ -89,32 +90,23 @@ public class ACRATest {
     public void testProductionConfigurationUserDisabled() throws Exception {
 
         // set up as if the user had prefs saved to disable completely
-        AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext()).edit()
+        AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getInstrumentation().getTargetContext()).edit()
                 .putString(AnkiDroidApp.FEEDBACK_REPORT_KEY, AnkiDroidApp.FEEDBACK_REPORT_NEVER).commit();
 
-        // If the user disabled it, then it's the debug case except the logcat args
-        setAcraConfig("Production", AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext()));
-
-        // ACRA protects itself from re-.init() and with our BuildConfig.BUILD_DEBUG check
-        // it is impossible to reinitialize as a production build until ACRA 5.2.0
-        //verifyProductionLogcat();
+        // ACRA initializes production logcat via annotation and we can't mock Build.DEBUG
+        // That means we are restricted from verifying production logcat args and this is the debug case again
+        setAcraConfig("Production", AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getInstrumentation().getTargetContext()));
         verifyDebugACRAPreferences();
     }
-
-    //private void verifyProductionLogcat() throws Exception {
-    //    assertArrayEquals("Production logcat arguments not set correctly",
-    //            new ImmutableList<>(prodLogcatArguments).toArray(),
-    //            app.getAcraCoreConfigBuilder().build().logcatArguments().toArray());
-    //}
 
     @Test
     public void testProductionConfigurationUserAsk() throws Exception {
         // set up as if the user had prefs saved to ask
-        AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext()).edit()
+        AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getInstrumentation().getTargetContext()).edit()
                 .putString(AnkiDroidApp.FEEDBACK_REPORT_KEY, AnkiDroidApp.FEEDBACK_REPORT_ASK).commit();
 
         // If the user is set to ask, then it's production, with interaction mode dialog
-        setAcraConfig("Production", AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext()));
+        setAcraConfig("Production", AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getInstrumentation().getTargetContext()));
         verifyACRANotDisabled();
 
         CoreConfiguration config = app.getAcraCoreConfigBuilder().build();
@@ -136,17 +128,17 @@ public class ACRATest {
     }
 
     @Test
-    public void testCrashReportSend() throws Exception {
+    public void testCrashReportLimit() throws Exception {
         // To test ACRA switch on  reporting, plant a production tree, and trigger a report
         Timber.plant(new AnkiDroidApp.ProductionCrashReportingTree());
 
         // set up as if the user had prefs saved to full auto
-        AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext()).edit()
+        AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getInstrumentation().getTargetContext()).edit()
                 .putString(AnkiDroidApp.FEEDBACK_REPORT_KEY, AnkiDroidApp.FEEDBACK_REPORT_ALWAYS).commit();
 
         // If the user is set to always, then it's production, with interaction mode toast
         // will be useful with ACRA 5.2.0
-        setAcraConfig("Production", AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext()));
+        setAcraConfig("Production", AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getInstrumentation().getTargetContext()));
 
         // The same class/method combo is only sent once, so we face a new method each time (should test that system later)
         Exception crash = new Exception("testCrashReportSend at " + System.currentTimeMillis());
@@ -155,38 +147,49 @@ public class ACRATest {
         };
         crash.setStackTrace(trace);
 
-        // get the current hash, get the reports, make sure our hash is not in there
-        Method getExceptionHash = app.getClass().getDeclaredMethod("getExceptionHash", Throwable.class);
-        getExceptionHash.setAccessible(true);
-        String exceptionHash = (String)getExceptionHash.invoke(app, crash);
-        JSONObject sentReports = new JSONObject(AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext())
-                .getString("sentExceptionReports", "{}"));
-        assertFalse("Sent reports contains the exception already", sentReports.has(exceptionHash));
+        // one send should work
+        CrashReportData crashData = new CrashReportDataFactory(InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                AnkiDroidApp.getInstance().getAcraCoreConfigBuilder().build()).createCrashData(new ReportBuilder().exception(crash));
 
-        // After ACRA 5.2.0 you should be able to go to the debug acralyzer and see the report
-        AnkiDroidApp.sendExceptionReport(crash, "testing ACRA send");
+        assertTrue(new LimitingReportAdministrator().shouldSendReport(
+                InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                AnkiDroidApp.getInstance().getAcraCoreConfigBuilder().build(),
+                crashData)
+        );
 
-        sentReports = new JSONObject(AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext())
-                .getString("sentExceptionReports", "{}"));
-        assertTrue("Sent reports should contain the exception", sentReports.has(exceptionHash));
+        // A second send should not work
+        assertFalse(new LimitingReportAdministrator().shouldSendReport(
+                InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                AnkiDroidApp.getInstance().getAcraCoreConfigBuilder().build(),
+                crashData)
+        );
+
+        // Now let's clear data
+        AnkiDroidApp.deleteACRALimiterData(InstrumentationRegistry.getInstrumentation().getTargetContext());
+
+        // A third send should work again
+        assertTrue(new LimitingReportAdministrator().shouldSendReport(
+                InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                AnkiDroidApp.getInstance().getAcraCoreConfigBuilder().build(),
+                crashData)
+        );
     }
 
 
     private void verifyACRANotDisabled() {
-        assertEquals("ACRA was not enabled correctly",
-                false,
-                AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext()).getBoolean(ACRA.PREF_DISABLE_ACRA, false));
+        assertFalse("ACRA was not enabled correctly",
+                AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getInstrumentation().getTargetContext()).getBoolean(ACRA.PREF_DISABLE_ACRA, false));
     }
 
 
     @Test
     public void testProductionConfigurationUserAlways() throws Exception {
         // set up as if the user had prefs saved to full auto
-        AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext()).edit()
+        AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getInstrumentation().getTargetContext()).edit()
                 .putString(AnkiDroidApp.FEEDBACK_REPORT_KEY, AnkiDroidApp.FEEDBACK_REPORT_ALWAYS).commit();
 
         // If the user is set to always, then it's production, with interaction mode toast
-        setAcraConfig("Production", AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getTargetContext()));
+        setAcraConfig("Production", AnkiDroidApp.getSharedPrefs(InstrumentationRegistry.getInstrumentation().getTargetContext()));
         verifyACRANotDisabled();
 
         CoreConfiguration config = app.getAcraCoreConfigBuilder().build();

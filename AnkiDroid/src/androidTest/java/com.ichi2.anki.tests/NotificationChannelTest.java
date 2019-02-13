@@ -20,9 +20,8 @@ import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.rule.GrantPermissionRule;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.GrantPermissionRule;
 
 import com.ichi2.anki.AnkiDroidApp;
 import com.ichi2.anki.NotificationChannels;
@@ -38,9 +37,9 @@ import java.util.List;
 import timber.log.Timber;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(androidx.test.ext.junit.runners.AndroidJUnit4.class)
 public class NotificationChannelTest {
 
     @Rule
@@ -53,7 +52,7 @@ public class NotificationChannelTest {
 
     @Before
     public void setUp() {
-        Context targetContext = InstrumentationRegistry.getTargetContext();
+        Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         ((AnkiDroidApp)targetContext.getApplicationContext()).onCreate();
         mCurrentAPI = CompatHelper.getSdkVersion();
         mTargetAPI = targetContext.getApplicationInfo().targetSdkVersion;
@@ -82,8 +81,8 @@ public class NotificationChannelTest {
         assertEquals("Incorrect channel count", expectedChannels, channels.size());
 
         for (NotificationChannels.Channel channel : NotificationChannels.Channel.values()) {
-            assertTrue("There should be a reminder channel",
-                    mManager.getNotificationChannel(NotificationChannels.getId(channel)) != null);
+            assertNotNull("There should be a reminder channel",
+                    mManager.getNotificationChannel(NotificationChannels.getId(channel)));
         }
     }
 }

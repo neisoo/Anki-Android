@@ -27,30 +27,30 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.ViewConfiguration;
 import android.webkit.CookieManager;
 
-import com.ichi2.anki.dialogs.AnkiDroidCrashReportDialog;
+import com.ichi2.anki.analytics.AnkiDroidCrashReportDialog;
 import com.ichi2.anki.exception.StorageAccessException;
 import com.ichi2.anki.services.BootService;
 import com.ichi2.compat.CompatHelper;
 import com.ichi2.utils.LanguageUtil;
+import com.ichi2.anki.analytics.UsageAnalytics;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.annotation.AcraCore;
 import org.acra.annotation.AcraDialog;
 import org.acra.annotation.AcraHttpSender;
+import org.acra.annotation.AcraLimiter;
 import org.acra.annotation.AcraToast;
 import org.acra.config.CoreConfigurationBuilder;
 import org.acra.config.DialogConfigurationBuilder;
 import org.acra.config.ToastConfigurationBuilder;
 import org.acra.sender.HttpSender;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -114,7 +114,8 @@ import static timber.log.Timber.DebugTree;
         resCommentPrompt =  R.string.empty_string,
         resTitle =  R.string.feedback_title,
         resText =  R.string.feedback_default_text,
-        resPositiveButtonText = R.string.feedback_report
+        resPositiveButtonText = R.string.feedback_report,
+        resIcon = R.drawable.logo_star_144dp
 )
 @AcraHttpSender(
         httpMethod = HttpSender.Method.PUT,
@@ -122,6 +123,10 @@ import static timber.log.Timber.DebugTree;
 )
 @AcraToast(
         resText = R.string.feedback_auto_toast_text
+)
+@AcraLimiter(
+        exceptionClassLimit = 1000,
+        stacktraceLimit = 1
 )
 public class AnkiDroidApp extends Application {
 
@@ -148,7 +153,7 @@ public class AnkiDroidApp extends Application {
      * collections being upgraded to (or after) this version must run an integrity check as it will contain fixes that
      * all collections should have.
      */
-    public static final int CHECK_DB_AT_VERSION = 40;
+    public static final int CHECK_DB_AT_VERSION = 20900148;
 
     /**
      * The latest package version number that included changes to the preferences that requires handling. All
@@ -201,6 +206,12 @@ public class AnkiDroidApp extends Application {
         }
         Timber.tag(TAG);
 
+        // analytics after ACRA, they both install UncaughtExceptionHandlers but Analytics chains while ACRA does not
+        UsageAnalytics.initialize(this);
+        if (BuildConfig.DEBUG) {
+            UsageAnalytics.setDryRun(true);
+        }
+
         sInstance = this;
         setLanguage(preferences.getString(Preferences.LANGUAGE, ""));
         NotificationChannels.setup(getApplicationContext());
@@ -230,7 +241,7 @@ public class AnkiDroidApp extends Application {
                 }
             }
         }
-        startService(new Intent(this, BootService.class));
+        new BootService().onReceive(this, new Intent(this, BootService.class));
     }
 
 
@@ -279,39 +290,21 @@ public class AnkiDroidApp extends Application {
 
 
     public static void sendExceptionReport(Throwable e, String origin, String additionalInfo) {
-        //CustomExceptionHandler.getInstance().uncaughtException(null, e, origin, additionalInfo);
-        SharedPreferences prefs = getSharedPrefs(getInstance());
-        // Only send report if we have not sent an identical report before
-        try {
-            JSONObject sentReports = new JSONObject(prefs.getString("sentExceptionReports", "{}"));
-            String hash = getExceptionHash(e);
-            if (sentReports.has(hash)) {
-                Timber.i("The exception report with hash %s has already been sent from this device", hash);
-                return;
-            } else {
-                sentReports.put(hash, true);
-                prefs.edit().putString("sentExceptionReports", sentReports.toString()).apply();
-            }
-        } catch (JSONException e1) {
-            Timber.i(e1, "Could not get cache of sent exception reports");
-        }
+        UsageAnalytics.sendAnalyticsException(e, false);
         ACRA.getErrorReporter().putCustomData("origin", origin);
         ACRA.getErrorReporter().putCustomData("additionalInfo", additionalInfo);
         ACRA.getErrorReporter().handleException(e);
     }
 
-    private static String getExceptionHash(Throwable th) {
-        final StringBuilder res = new StringBuilder();
-        Throwable cause = th;
-        while (cause != null) {
-            final StackTraceElement[] stackTraceElements = cause.getStackTrace();
-            for (final StackTraceElement e : stackTraceElements) {
-                res.append(e.getClassName());
-                res.append(e.getMethodName());
-            }
-            cause = cause.getCause();
-        }
-        return Integer.toHexString(res.toString().hashCode());
+
+    /**
+     * If you want to make sure that the next exception of any time is posted, you need to clear limiter data
+     *
+     * ACRA 5.3.x does this automatically on version upgrade (https://github.com/ACRA/acra/pull/696), until then they blessed deleting file
+     * @param context the context leading to the directory with ACRA limiter data
+     */
+    public static void deleteACRALimiterData(Context context) {
+        context.getFileStreamPath("ACRA-limiter.json").delete();
     }
 
 
@@ -320,6 +313,7 @@ public class AnkiDroidApp extends Application {
      *
      * @param localeCode The locale code of the language to set, system language if empty
      */
+    @SuppressWarnings("deprecation") // Tracked as #4729 in github
     public static void setLanguage(String localeCode) {
         Configuration config = getInstance().getResources().getConfiguration();
         Locale newLocale = LanguageUtil.getLocale(localeCode);
@@ -478,8 +472,13 @@ public class AnkiDroidApp extends Application {
             // because Robolectric runs them on the JVM but on Android the elements are different.
             StackTraceElement[] stackTrace = new Throwable().getStackTrace();
             if (stackTrace.length <= CALL_STACK_INDEX) {
-                throw new IllegalStateException(
-                        "Synthetic stacktrace didn't have enough elements: are you using proguard?");
+
+                // --- this is not present in the Timber.DebugTree copy/paste ---
+                // We are in production and should not crash the app for a logging failure
+                return TAG + " unknown class";
+                //throw new IllegalStateException(
+                //        "Synthetic stacktrace didn't have enough elements: are you using proguard?");
+                // --- end of alteration from upstream Timber.DebugTree.getTag ---
             }
             return createStackElementTag(stackTrace[CALL_STACK_INDEX]);
         }

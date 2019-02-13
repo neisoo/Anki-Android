@@ -4,13 +4,23 @@ import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.support.v4.app.NotificationCompat;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+
+import androidx.core.app.NotificationCompat;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import timber.log.Timber;
 
 /** Implementation of {@link Compat} for SDK level 26 */
 @TargetApi(26)
-public class CompatV26 extends CompatV23 implements Compat {
+public class CompatV26 extends CompatV24 implements Compat {
 
     /**
      * In Oreo and higher, you must create a channel for all notifications.
@@ -31,5 +41,24 @@ public class CompatV26 extends CompatV23 implements Compat {
         notificationChannel.setShowBadge(true);
         notificationChannel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         manager.createNotificationChannel(notificationChannel);
+    }
+
+    @Override
+    public void vibrate(Context context, long durationMillis) {
+        Vibrator vibratorManager = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibratorManager != null) {
+            VibrationEffect effect = VibrationEffect.createOneShot(durationMillis, VibrationEffect.DEFAULT_AMPLITUDE);
+            vibratorManager.vibrate(effect);
+        }
+    }
+
+    @Override
+    public long copyFile(String source, OutputStream target) throws IOException {
+        return Files.copy(Paths.get(source), target);
+    }
+
+    @Override
+    public long copyFile(InputStream source, String target) throws IOException {
+        return Files.copy(source, Paths.get(target), StandardCopyOption.REPLACE_EXISTING);
     }
 }
