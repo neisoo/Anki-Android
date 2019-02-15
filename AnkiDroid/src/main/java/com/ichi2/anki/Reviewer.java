@@ -230,9 +230,11 @@ public class Reviewer extends AbstractFlashcardViewer {
                 playSounds(true);
                 break;
 
+/* ZYH: Disable in homeschool version.
             case R.id.action_edit:
                 Timber.i("Reviewer:: Edit note button pressed");
                 return editCard();
+*/
 
             case R.id.action_bury:
                 Timber.i("Reviewer:: Bury button pressed");
@@ -250,10 +252,12 @@ public class Reviewer extends AbstractFlashcardViewer {
                 }
                 break;
 
+/* ZYH: Disable in homeschool version.
             case R.id.action_delete:
                 Timber.i("Reviewer:: Delete note button pressed");
                 showDeleteNoteDialog();
                 break;
+*/
 
             case R.id.action_clear_whiteboard:
                 Timber.i("Reviewer:: Clear whiteboard button pressed");
@@ -293,10 +297,12 @@ public class Reviewer extends AbstractFlashcardViewer {
                 showSelectTtsDialogue();
                 break;
 
+/* ZYH: Disable in homeschool version.
             case R.id.action_add_note_reviewer:
                 Timber.i("Reviewer:: Add note button pressed");
                 addNote();
                 break;
+*/
 
             default:
                 return super.onOptionsItemSelected(item);

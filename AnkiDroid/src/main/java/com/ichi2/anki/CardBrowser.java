@@ -562,6 +562,7 @@ public class CardBrowser extends NavigationDrawerActivity implements
                     cb.toggle();
                     onCheck(position, view);
                 } else {
+/* ZYH: Not edit card in homeschool version.
                     // load up the card selected on the list
                     mCurrentCardId = Long.parseLong(getCards().get(position).get("id"));
                     sCardBrowserCard = getCol().getCard(mCurrentCardId);
@@ -570,6 +571,7 @@ public class CardBrowser extends NavigationDrawerActivity implements
                     editCard.putExtra(NoteEditor.EXTRA_CALLER, NoteEditor.CALLER_CARDBROWSER_EDIT);
                     editCard.putExtra(NoteEditor.EXTRA_CARD_ID, sCardBrowserCard.getId());
                     startActivityForResultWithAnimation(editCard, EDIT_CARD, ActivityTransitionAnimation.LEFT);
+*/
                 }
             }
         });
@@ -784,12 +786,14 @@ public class CardBrowser extends NavigationDrawerActivity implements
             case android.R.id.home:
                 endMultiSelectMode();
                 return true;
+/* ZYH: Not add card in homeschool version.
             case R.id.action_add_card_from_card_browser: {
                 Intent intent = new Intent(CardBrowser.this, NoteEditor.class);
                 intent.putExtra(NoteEditor.EXTRA_CALLER, NoteEditor.CALLER_CARDBROWSER_ADD);
                 startActivityForResultWithAnimation(intent, ADD_NOTE, ActivityTransitionAnimation.LEFT);
                 return true;
             }
+*/
 
             case R.id.action_save_search: {
                 String searchTerms = mSearchView.getQuery().toString();
@@ -836,6 +840,7 @@ public class CardBrowser extends NavigationDrawerActivity implements
                 showTagsDialog();
                 return true;
 
+/* ZYH: Not delete card in homeschool version.
             case R.id.action_delete_card:
                 if (mInMultiSelectMode) {
                     DeckTask.launchDeckTask(DeckTask.TASK_TYPE_DISMISS_MULTI,
@@ -847,6 +852,7 @@ public class CardBrowser extends NavigationDrawerActivity implements
                     mCardsAdapter.notifyDataSetChanged();
                 }
                 return true;
+*/
 
             case R.id.action_mark_card:
                 DeckTask.launchDeckTask(DeckTask.TASK_TYPE_DISMISS_MULTI,
@@ -863,6 +869,7 @@ public class CardBrowser extends NavigationDrawerActivity implements
 
                 return true;
 
+/* ZYH: Not change card's deck in homeschool version.
             case R.id.action_change_deck: {
                 AlertDialog.Builder builderSingle = new AlertDialog.Builder(this);
                 builderSingle.setTitle(getString(R.string.move_all_to_deck));
@@ -893,6 +900,7 @@ public class CardBrowser extends NavigationDrawerActivity implements
 
                 return true;
             }
+*/
 
             case R.id.action_undo:
                 if (getCol().undoAvailable()) {

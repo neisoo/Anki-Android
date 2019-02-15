@@ -32,6 +32,7 @@
         android:enabled="false"
         android:menuCategory="secondary"
         android:title="@string/empty_cards"/>
+<!-- ZYH: Disable some menu items in deck picker in homeschool version.
     <item
         android:id="@+id/action_restore_backup"
         android:menuCategory="secondary"
@@ -48,4 +49,5 @@
         android:id="@+id/action_export"
         android:menuCategory="secondary"
         android:title="@string/export_collection"/>
+-->
 </menu>

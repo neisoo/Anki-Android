@@ -396,10 +396,12 @@ public class DeckPicker extends NavigationDrawerActivity implements
         mPullToSyncWrapper.getViewTreeObserver().addOnScrollChangedListener(() ->
                 mPullToSyncWrapper.setEnabled(mRecyclerViewLayoutManager.findFirstCompletelyVisibleItemPosition() == 0));
 
+/* ZYH: Disable floating add button in deck picker in homeschool version.
         // Setup the FloatingActionButtons, should work everywhere with min API >= 15
         mActionsMenu = findViewById(R.id.add_content_menu);
         mActionsMenu.findViewById(R.id.fab_expand_menu_button).setContentDescription(getString(R.string.menu_add));
         configureFloatingActionsMenu();
+*/
 
         mReviewSummaryTextView = (TextView) findViewById(R.id.today_stats_text_view);
 
@@ -531,10 +533,12 @@ public class DeckPicker extends NavigationDrawerActivity implements
                 sync();
                 return true;
 
+/* ZYH: Disable some menu items in deck picker in homeschool version.
             case R.id.action_import:
                 Timber.i("DeckPicker:: Import button pressed");
                 showImportDialog(ImportDialog.DIALOG_IMPORT_HINT);
                 return true;
+*/
 
             case R.id.action_new_filtered_deck: {
                 Timber.i("DeckPicker:: New filtered deck button pressed");
@@ -577,6 +581,7 @@ public class DeckPicker extends NavigationDrawerActivity implements
                 handleEmptyCards();
                 return true;
 
+/* ZYH: Disable some menu items in deck picker in homeschool version.
             case R.id.action_model_browser_open: {
                 Timber.i("DeckPicker:: Model browser button pressed");
                 Intent noteTypeBrowser = new Intent(this, ModelBrowser.class);
@@ -594,6 +599,7 @@ public class DeckPicker extends NavigationDrawerActivity implements
                 showDialogFragment(ExportDialog.newInstance(msg));
                 return true;
             }
+*/
             default:
                 return super.onOptionsItemSelected(item);
 

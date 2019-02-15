@@ -100,13 +100,23 @@ public class DeckPickerContextMenu extends AnalyticsDialogFragment {
             itemIds.add(CONTEXT_MENU_CUSTOM_STUDY_REBUILD);
             itemIds.add(CONTEXT_MENU_CUSTOM_STUDY_EMPTY);
         }
-        itemIds.add(CONTEXT_MENU_RENAME_DECK);
+        /* ZYH: Only filter deck enable delete in homeschool version. */
+        // itemIds.add(CONTEXT_MENU_RENAME_DECK);
+        if (col.getDecks().isDyn(did)) {
+            itemIds.add(CONTEXT_MENU_RENAME_DECK);
+        }
         itemIds.add(CONTEXT_MENU_DECK_OPTIONS);
         if (!col.getDecks().isDyn(did)) {
             itemIds.add(CONTEXT_MENU_CUSTOM_STUDY);
         }
-        itemIds.add(CONTEXT_MENU_DELETE_DECK);
+        /* ZYH: Only filter deck enable delete in homeschool version. */
+        // itemIds.add(CONTEXT_MENU_DELETE_DECK);
+        if (col.getDecks().isDyn(did)) {
+            itemIds.add(CONTEXT_MENU_DELETE_DECK);
+        }
+/* ZYH: Disable export deck in homeschool version.
         itemIds.add(CONTEXT_MENU_EXPORT_DECK);
+*/
         if (col.getSched().haveBuried(did)) {
             itemIds.add(CONTEXT_MENU_UNBURY);
         }

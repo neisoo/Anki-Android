@@ -1,10 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ankidroid="http://schemas.android.com/apk/res-auto" >
 
+<!-- ZYH: Not delete card in homeschool version.
     <item
         android:id="@+id/action_delete_card"
         android:icon="@drawable/ic_delete_white_24dp"
         android:title="@string/card_browser_delete_card" />
+-->
 
 	<item
         ankidroid:showAsAction="ifRoom"
@@ -19,9 +21,11 @@
         android:icon="@drawable/ic_action_suspend"
         android:title="@string/card_browser_suspend_card"/>
 
+<!-- ZYH: Not change card's deck in homeschool version.
     <item
         android:id="@+id/action_change_deck"
         android:title="@string/card_browser_change_deck"/>
+-->
 
     <item
         android:id="@+id/action_reposition_cards"

@@ -1,11 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ankidroid="http://schemas.android.com/apk/res-auto" >
 
+<!-- ZYH: Not add card in homeschool version.
     <item
         android:id="@+id/action_add_card_from_card_browser"
         android:icon="@drawable/ic_add_white_24dp"
         android:title="@string/card_editor_add_card"
         ankidroid:showAsAction="ifRoom"/>
+-->
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_search_white_24dp"

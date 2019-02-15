@@ -39,6 +39,8 @@
 ~ this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
+  <!-- ZYH: Change App name in homeschool version. -->
+  <string name="app_name">家輔中心</string>
   <!-- How to format a percentage shown in the summary field of a preference -->
   <string name="preference_summary_percentage">XXX%</string>
   <!-- Navigation drawer strings -->

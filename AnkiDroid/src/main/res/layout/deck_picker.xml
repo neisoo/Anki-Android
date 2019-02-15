@@ -39,5 +39,7 @@
             android:gravity="center"/>
     </RelativeLayout>
     <include layout="@layout/anki_progress"/>
+<!-- ZYH: Disable floating add button in deck picker in homeschool version.
     <include layout="@layout/floating_add_button"/>
+-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

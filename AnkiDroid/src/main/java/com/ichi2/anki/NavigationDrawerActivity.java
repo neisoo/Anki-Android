@@ -294,12 +294,14 @@ public abstract class NavigationDrawerActivity extends AnkiActivity implements N
                     mOldTheme = Themes.getCurrentTheme(getApplicationContext());
                     startActivityForResultWithAnimation(new Intent(NavigationDrawerActivity.this, Preferences.class), REQUEST_PREFERENCES_UPDATE, ActivityTransitionAnimation.FADE);
                     break;
+/* ZYH: Disable in homeschool version.
                 case R.id.nav_help:
                     openUrl(Uri.parse(AnkiDroidApp.getManualUrl()));
                     break;
                 case R.id.nav_feedback:
                     openUrl(Uri.parse(AnkiDroidApp.getFeedbackUrl()));
                     break;
+*/
                 default:
                     break;
             }

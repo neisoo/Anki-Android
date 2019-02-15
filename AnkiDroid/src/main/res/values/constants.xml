@@ -20,7 +20,10 @@
         NOT edit them, unless you change their corresponding values
     -->
     <!-- App name -->
+<!-- ZYH: Change App name in homeschool version.
     <string name="app_name">AnkiDroid</string>
+-->
+    <string name="app_name">Homeschool</string>
     <!-- Text to be shown in preference summary -->
     <string name="preference_summary_literal">XXX</string>
     <!-- Used in deck preferences -->
