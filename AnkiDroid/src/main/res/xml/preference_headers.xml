@@ -31,6 +31,7 @@
     </header>
 
     <!-- Reviewing Preferences -->
+<!-- ZYH: Disable in homeschool version.
     <header
         android:fragment="com.ichi2.anki.Preferences$SettingsFragment"
         android:summary="@string/pref_cat_reviewing_summ"
@@ -39,6 +40,7 @@
             android:name="subscreen"
             android:value="com.ichi2.anki.prefs.reviewing" />
     </header>
+-->
 
     <!-- Appearance Prefrences  -->
     <header
@@ -52,6 +54,7 @@
     </header>
 
     <!-- Navigation Prefrences -->
+<!-- ZYH: Disable in homeschool version.
     <header
         android:fragment="com.ichi2.anki.Preferences$SettingsFragment"
         android:summary="@string/pref_cat_gestures_summ"
@@ -60,6 +63,7 @@
             android:name="subscreen"
             android:value="com.ichi2.anki.prefs.gestures" />
     </header>
+-->
 
     <!-- Advanced Preferences -->
     <header

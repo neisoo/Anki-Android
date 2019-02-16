@@ -38,6 +38,7 @@
         <Preference
             android:key="custom_sync_server_link"
             android:title="@string/custom_sync_server_title"/>
+<!-- ZYH: Disable in homeschool version.
         <PreferenceCategory android:title="@string/pref_cat_performance" >
             <com.ichi2.ui.SeekBarPreference
                 android:defaultValue="8"
@@ -49,6 +50,7 @@
                 app:interval="1"
                 app:min="0" />
         </PreferenceCategory>
+-->
         <PreferenceCategory
             android:key="category_workarounds"
             android:title="@string/pref_cat_workarounds" >
@@ -133,16 +135,20 @@
         </PreferenceCategory>
 
 
+<!-- ZYH: Disable in homeschool version.
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="schedVer"
         android:title="@string/sched_ver"
         android:summary="@string/sched_ver_summ" />
+-->
     <Preference
         android:key="about_dialog_preference"
         android:title="@string/about_title">
+<!-- ZYH: Disable in homeschool version.
         <intent
             android:targetPackage="com.ichi2.anki"
             android:targetClass="com.ichi2.anki.Info"/>
+-->
     </Preference>
 </PreferenceScreen>

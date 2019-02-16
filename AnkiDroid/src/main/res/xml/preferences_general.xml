@@ -34,11 +34,13 @@
                 android:targetClass="com.ichi2.anki.MyAccount"
                 android:targetPackage="com.ichi2.anki" />
         </Preference>
+<!-- ZYH: Disable in homeschool version.
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="syncFetchesMedia"
             android:summary="@string/sync_fetch_missing_media_summ"
             android:title="@string/sync_fetch_missing_media" />
+-->
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="automaticSyncMode"
@@ -46,6 +48,7 @@
             android:title="@string/automatic_sync_choice" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_cat_general">
+<!-- ZYH: Disable in homeschool version.
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/add_to_cur_labels"
@@ -53,11 +56,13 @@
             android:key="useCurrent"
             android:summary=""
             android:title="@string/use_current" />
+-->
         <ListPreference
             android:defaultValue="0"
             android:key="language"
             android:summary="@string/preference_summary_literal"
             android:title="@string/language" />
+<!-- ZYH: Disable in homeschool version.
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="analyticsOptIn"
@@ -69,6 +74,7 @@
             android:entryValues="@array/error_reporting_choice_values"
             android:key="reportErrorMode"
             android:title="@string/error_reporting_choice" />
+-->
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/notification_pref" >
         <ListPreference

@@ -43,7 +43,10 @@
   <string name="disabled">禁用</string>
   <string name="enabled">启用</string>
   <!-- preferences.xml categories-->
+<!-- ZYH: Remove anki string in homeschool version.
   <string name="pref_cat_general">AnkiDroid</string>
+-->
+  <string name="pref_cat_general">常用</string>
   <string name="pref_cat_general_summ">常用设置</string>
   <string name="pref_cat_reviewing">复习</string>
   <string name="pref_cat_reviewing_summ">复习通用设置</string>
@@ -63,7 +66,10 @@
   <string name="pref_cat_performance">性能</string>
   <string name="pref_cat_workarounds">变通方法</string>
   <string name="pref_cat_plugins">插件</string>
+<!--
   <string name="about_title">关于</string>
+-->
+  <string name="about_title">关于 草莓题库</string>
   <string name="about_version">版本：</string>
   <!-- preferences.xml entries-->
   <string name="whiteboard_stroke_width">笔画粗细</string>
@@ -111,7 +117,10 @@
   <string name="tts_summ">若没有附带声音文件则读出问题和答案</string>
   <string name="sync_fetch_missing_media">同步时获取媒体文件</string>
   <string name="sync_fetch_missing_media_summ">同步时自动获取缺失的媒体文件</string>
+<!-- ZYH: Remove anki string in homeschool version.
   <string name="sync_account">AnkiWeb 帐户</string>
+-->
+  <string name="sync_account">同步服务器 帐户</string>
   <string name="sync_account_summ_logged_out">未登录</string>
   <string name="sync_account_summ_logged_in">%s</string>
   <string name="automatic_sync_choice">自动同步</string>

@@ -286,6 +286,7 @@ public class Preferences extends AppCompatPreferenceActivity implements Preferen
                 });
                 // Make it possible to test crash reporting, but only for DEBUG builds
                 if (BuildConfig.DEBUG) {
+/* ZYH: Disable in homeschool version.
                     Timber.i("Debug mode, allowing for test crashes");
                     Preference triggerTestCrashPreference = new Preference(this);
                     triggerTestCrashPreference.setKey("trigger_crash_preference");
@@ -296,9 +297,11 @@ public class Preferences extends AppCompatPreferenceActivity implements Preferen
                         throw new RuntimeException("This is a test crash");
                     });
                     screen.addPreference(triggerTestCrashPreference);
+*/
                 }
                 // Make it possible to test analytics, but only for DEBUG builds
                 if (BuildConfig.DEBUG) {
+/* ZYH: Disable in homeschool version.
                     Timber.i("Debug mode, allowing for dynamic analytics config");
                     Preference analyticsDebugMode = new Preference(this);
                     analyticsDebugMode.setKey("analytics_debug_preference");
@@ -309,6 +312,7 @@ public class Preferences extends AppCompatPreferenceActivity implements Preferen
                         return true;
                     });
                     screen.addPreference(analyticsDebugMode);
+*/
                 }
                 // Force full sync option
                 ConfirmationPreference fullSyncPreference = (ConfirmationPreference)screen.findPreference("force_full_sync");
@@ -633,6 +637,8 @@ public class Preferences extends AppCompatPreferenceActivity implements Preferen
         switch (pref.getKey()) {
             case "about_dialog_preference":
                 pref.setSummary(getResources().getString(R.string.about_version) + " " + VersionUtils.getPkgVersionName());
+                // ZYH: Add 'Power by AnkiDroid' string in homeschool version.
+                //pref.setSummary(getResources().getString(R.string.about_version) + " " + VersionUtils.getPkgVersionName() + ", Power by AnkiDroid.");
                 break;
             case "custom_sync_server_link":
                 if (!AnkiDroidApp.getSharedPrefs(this).getBoolean("useCustomSyncServer", false)) {
@@ -749,6 +755,12 @@ public class Preferences extends AppCompatPreferenceActivity implements Preferen
                 workarounds.removePreference(fixHebrewText);
             }
         }
+
+        // + ZYH: Disable in homeschool version.
+        screen.removePreference(plugins);
+        EditTextPreference collectionPathPreference = (EditTextPreference) screen.findPreference("deckPath");
+        screen.removePreference(collectionPathPreference);
+        // -
     }
 
 
