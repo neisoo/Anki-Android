@@ -126,9 +126,10 @@
   <string name="fact_adder_intent_title">AnkiDroid 卡片</string>
   <string name="card_editor_add_card">增加筆記</string>
   <string name="card_editor_copy_card">複製卡片</string>
-  <string name="card_editor_reposition_card">更改位置</string>
-  <string name="card_editor_reset_card">重設卡片進度</string>
-  <string name="card_editor_reschedule_card">重置卡片進度</string>
+  <string name="card_editor_card_scheduling">安排学习进度</string>
+  <string name="card_editor_reposition_card">更改新卡片順序</string>
+  <string name="card_editor_reset_card">放回新卡片最後</string>
+  <string name="card_editor_reschedule_card">手動設置復習時間</string>
   <string name="card_editor_preview_card">預覽</string>
   <string name="error_insufficient_memory">因為裝置上沒有足夠的記憶體所以不能執行你要求的操作</string>
   <string name="rename">重新命名</string>

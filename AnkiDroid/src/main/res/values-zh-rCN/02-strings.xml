@@ -126,9 +126,10 @@
   <string name="fact_adder_intent_title">AnkiDroid卡片</string>
   <string name="card_editor_add_card">添加笔记</string>
   <string name="card_editor_copy_card">复制卡片</string>
-  <string name="card_editor_reposition_card">Reposition</string>
-  <string name="card_editor_reset_card">重设学习进度</string>
-  <string name="card_editor_reschedule_card">重设学习进度</string>
+  <string name="card_editor_card_scheduling">安排学习进度</string>
+  <string name="card_editor_reposition_card">更改新卡片顺序</string>
+  <string name="card_editor_reset_card">放回新卡片最后</string>
+  <string name="card_editor_reschedule_card">手动设置复习时间</string>
   <string name="card_editor_preview_card">预览</string>
   <string name="error_insufficient_memory">由于设备内存不足导致操作无法完成。</string>
   <string name="rename">重命名</string>
