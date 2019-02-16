@@ -42,7 +42,9 @@
             android:summary="XXX"
             android:title="@string/night_theme" />
     </PreferenceCategory>
-        <PreferenceCategory android:title="@string/pref_cat_fonts" >
+        <PreferenceCategory
+            android:key="category_fonts"
+            android:title="@string/pref_cat_fonts" >
             <ListPreference
                 android:defaultValue="0"
                 android:key="defaultFont"

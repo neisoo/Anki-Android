@@ -774,6 +774,12 @@ public class Preferences extends AppCompatPreferenceActivity implements Preferen
         ListPreference browserEditorCustomFontsPreference = (ListPreference) screen.findPreference("browserEditorFont");
         browserEditorCustomFontsPreference.setEntries(getCustomFonts("System default"));
         browserEditorCustomFontsPreference.setEntryValues(getCustomFonts("", true));
+
+        // + ZYH: Disable in homeschool version.
+        PreferenceCategory fonts = (PreferenceCategory) screen.findPreference("category_fonts");
+        screen.removePreference(fonts);
+        // -
+
     }
 
 
