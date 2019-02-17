@@ -387,6 +387,16 @@ public class StudyOptionsFragment extends Fragment implements Toolbar.OnMenuItem
                 }
             });
         }
+
+        // ZYH: Disable in homeschool version.
+        if (getCol().getDecks().isDyn(getCol().getDecks().selected())) {
+        } else {
+            menu.findItem(R.id.action_deck_options).setVisible(false);
+            menu.findItem(R.id.action_delete).setVisible(false);
+            menu.findItem(R.id.action_export).setVisible(false);
+            menu.findItem(R.id.action_rename).setVisible(false);
+        }
+
     }
 
 
