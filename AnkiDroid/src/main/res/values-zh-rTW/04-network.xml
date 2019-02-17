@@ -48,7 +48,7 @@
   <string name="terms_and_conditions"><a href="https://ankiweb.net/account/terms">使用條款</a></string>
   <string name="menu_get_shared_decks">取得共享的牌組</string>
   <string name="connection_error_message">網路出了點問題。</string>
-  <string name="not_logged_in_title">登入 AnkiWeb</string>
+  <string name="not_logged_in_title">登入同步服務器</string>
   <string name="login_create_account_message">您必須登錄到第三方賬戶以使用云同步服務。您可以在下一步創建一個賬戶。</string>
   <!-- MyAccount.java -->
   <string name="username">電子郵件地址</string>
@@ -68,7 +68,7 @@
   <string name="downloaddeck_search">搜尋</string>
   <string name="preferences_title">偏好設定</string>
   <string name="deckpreferences_title">XXX 的選項</string>
-  <string name="sync_conflict_message">你本地的牌組與 AnkiWeb 牌組之間的差異無法合併，因此需要以某一方的牌組來覆蓋另一方的牌組。\n\n你想要上傳本地的牌組，或是從AnkiDroid 下載牌組呢？</string>
+  <string name="sync_conflict_message">你本地的牌組與同步服務器的牌組之間的差異無法合併，因此需要以某一方的牌組來覆蓋另一方的牌組。\n\n你想要上傳本地的牌組，或是從同步服務器下載牌組呢？</string>
   <string name="sync_conflict_local">上傳</string>
   <string name="sync_conflict_remote">下載</string>
   <string name="sync_conflict_remote_confirm">覆蓋本地的收藏嗎？</string>
@@ -93,7 +93,7 @@
   <string name="sync_remote_db_error">已下載的資料庫已損壞。請再試一次。</string>
   <string name="sync_overwrite_error">所下載的檔案無法覆蓋你當前的收藏</string>
   <string name="sync_connection_error">連線逾時。可能是你的網路連線有問題，或是你的媒體資料夾內有很大的檔案。</string>
-  <string name="sync_error_409">一次只能有一個用戶連線到 AnkiWeb，如果上次同步失敗了，請幾分鐘後再嘗試。</string>
+  <string name="sync_error_409">一次只能有一個用戶連線到同步服務器，如果上次同步失敗了，請幾分鐘後再嘗試。</string>
   <string name="sync_write_access_error">下載的檔無法保存到 SD 卡。你的 SD 卡設定為唯讀，或者沒有足夠的空間。</string>
   <string name="sync_deletions_message">同步刪除...</string>
   <string name="sync_small_objects_message">同步小物件...</string>
@@ -120,6 +120,6 @@
   <string name="force_full_sync_title">強制完整同步</string>
   <string name="force_full_sync_summary">下一次同步時，強制單方面的修改</string>
   <string name="full_sync_confirmation">此變動會使你下一次同步你的收藏時，需要完整上傳你的資料庫。如果同步的話，你其他的裝置上尚未同步的複習卡片或其他變動的部分將會遺失，你是否要繼續？</string>
-  <string name="full_sync_confirmation_upgrade">由於先前安裝的 AnkiDroid 版本的程式錯誤，我們建議你強制完整同步一次。</string>
-  <string name="sync_error_501_upgrade_required">請更新到最新版的 AnkiDroid</string>
+  <string name="full_sync_confirmation_upgrade">由於先前安裝的版本的程式錯誤，我們建議你強制完整同步一次。</string>
+  <string name="sync_error_501_upgrade_required">請更新到最新的版本</string>
 </resources>

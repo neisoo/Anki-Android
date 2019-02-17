@@ -72,6 +72,7 @@
                 <!-- TODO better text size ^^ -->
 
 
+<!--
                 <Button
                     android:id="@+id/reset_password_button"
                     android:layout_width="wrap_content"
@@ -84,18 +85,42 @@
                     android:layout_gravity="center"
                     android:text="@string/reset_password"
                     android:layout_margin="@dimen/content_vertical_padding"
-                    />
+                    android:visibility="gone"/>
+-->
+                <Button
+                    android:id="@+id/reset_password_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:textSize="@dimen/abc_text_size_button_material"
+                    android:textColor="?attr/colorAccent"
+                    android:singleLine="true"
+                    android:padding="10dp"
+                    android:layout_gravity="center"
+                    android:text="@string/reset_password"
+                    android:layout_margin="@dimen/content_vertical_padding"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
         </ScrollView>
 
+<!-- ZYH: Disable in homeschool version.
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="3dp"
             android:orientation="vertical"
             >
+-->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+
             <!-- TODO move padding to dimen, when finalized -->
 
             <TextView
