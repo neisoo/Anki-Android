@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -77,9 +78,11 @@ import com.ichi2.widget.WidgetStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -153,6 +156,8 @@ public class CardBrowser extends NavigationDrawerActivity implements
         "tags",
         "lapses",
         "reviews",
+        "ivl",
+        "due",
         "changed",
         "created",
         "due",
@@ -258,6 +263,12 @@ public class CardBrowser extends NavigationDrawerActivity implements
             int cardCount = result.getObjArray().length;
             UIUtils.showThemedToast(CardBrowser.this,
                     getResources().getQuantityString(R.plurals.reset_cards_dialog_acknowledge, cardCount, cardCount), true);
+
+            // ZYH:刷新列表中被修改的卡片
+            Card[] cards = (Card[]) result.getObjArray();
+            updateCardsInList(Arrays.asList(cards), null);
+            updateMultiselectMenu();
+            invalidateOptionsMenu();    // maybe the availability of undo changed
         }
     };
 
@@ -275,6 +286,13 @@ public class CardBrowser extends NavigationDrawerActivity implements
             int cardCount = result.getObjArray().length;
             UIUtils.showThemedToast(CardBrowser.this,
                     getResources().getQuantityString(R.plurals.reschedule_cards_dialog_acknowledge, cardCount, cardCount), true);
+
+            // ZYH:刷新列表中被修改的卡片
+            Card[] cards = (Card[]) result.getObjArray();
+            updateCardsInList(Arrays.asList(cards), null);
+            updateMultiselectMenu();
+            invalidateOptionsMenu();    // maybe the availability of undo changed
+
         }
     };
 
@@ -1238,6 +1256,11 @@ public class CardBrowser extends NavigationDrawerActivity implements
             // update flags (marked / suspended / etc) which determine color
             String flags = Integer.toString((c.getQueue() == -1 ? 1 : 0) + (note.hasTag("marked") ? 2 : 0));
             getCards().get(pos).put("flags", flags);
+
+            // ZYH:更新被修改卡片的type, ivl, due数据。
+            getCards().get(pos).put("type", Integer.toString(c.getType()));
+            getCards().get(pos).put("ivl", Integer.toString(c.getIvl()));
+            getCards().get(pos).put("due", Long.toString(c.getDue()));
         }
 
         updateList();
@@ -1298,7 +1321,6 @@ public class CardBrowser extends NavigationDrawerActivity implements
             }
         }
     };
-
 
     public static void updateSearchItemQA(Map<String, String> item, Card c) {
         // render question and answer
@@ -1681,7 +1703,52 @@ public class CardBrowser extends NavigationDrawerActivity implements
                 setFont(col);
                 // set text for column
                 col.setText(dataSet.get(mFromKeys[i]));
+
+                if (i == 0) {
+                    // ZYH:加粗显示复习中的卡片。
+                    TextPaint tp = col.getPaint();
+                    tp.setFakeBoldText(Integer.parseInt(dataSet.get("type")) == 2);
+                }
+                if (mFromKeys[i].equals("ivl")) {
+                    // ZYH:复习间隔
+                    int type = Integer.parseInt(dataSet.get("type"));
+                    if (type == 2) {
+                        int ivl =  Integer.parseInt(dataSet.get("ivl"));
+                        col.setText(Utils.timeQuantity(getBaseContext(),ivl * 60 * 60 * 24));
+                    }
+                    else if (type == 1) {
+                        col.setText(getString(R.string.browser_card_type_learning));
+                    }
+                    else if (type == 0) {
+                        col.setText(getString(R.string.browser_card_type_new));
+                    }
+                }
+                else if (mFromKeys[i].equals("due")) {
+                    // ZYH:复习时间
+                    int type = Integer.parseInt(dataSet.get("type"));
+                    int due =  Integer.parseInt(dataSet.get("due"));
+                    if (type == 2) {
+                        // 计算距到期日的天数：due-today
+                        int today = CollectionHelper.getInstance().getCol(getBaseContext()).getSched().getToday();
+                        int remainDay = due - today;
+                        String strRemain = Utils.timeQuantity(getBaseContext(),remainDay * 60 * 60 * 24);
+
+                        long time = (long)((Utils.now() + remainDay*(60*60*24)) * 1000);//long now = android.os.SystemClock.uptimeMillis();
+                        SimpleDateFormat format =new SimpleDateFormat(getString(R.string.browser_card_date_format));
+                        Date date = new Date(time);
+                        String strDate = format.format(date);
+
+                        col.setText(String.format(getString(R.string.browser_card_review_time_format), strDate, strRemain));
+                    }
+                    else if (type == 1) {
+                        col.setText(getString(R.string.browser_card_type_learning));
+                    }
+                    else if (type == 0) {
+                        col.setText(getString(R.string.browser_card_type_new));
+                    }
+                }
             }
+
             // set card's background color
             final int backgroundColor = colors[colorIdx];
             v.setBackgroundColor(backgroundColor);

@@ -66,6 +66,8 @@
         <item>Tags</item>
         <item>Lapses</item>
         <item>Reviews</item>
+        <item>Interval</item>
+        <item>Due</item>
         <!--
     <item>Changed</item>
     <item>Created</item>
@@ -75,6 +77,10 @@
     <item>Interval</item>
         -->
     </string-array>
+    <string name="browser_card_type_new">New</string>
+    <string name="browser_card_type_learning">Learning</string>
+    <string name="browser_card_date_format">yyyy-MM-dd</string>
+    <string name="browser_card_review_time_format">%1$s（%2$s）</string>
 
     <!-- Custom study options -->
     <string name="custom_study_increase_new_limit">Increase today’s new card limit</string>

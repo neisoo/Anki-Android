@@ -773,6 +773,10 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
                                 sched.forgetCards(cardIds);
                                 break;
                         }
+                        // ZYH: reload cards because they'll be passed back to caller
+                        for (Card c : cards) {
+                            c.load();
+                        }
                         // In all cases schedule a new card so Reviewer doesn't sit on the old one
                         col.reset();
                         publishProgress(new TaskData(getCard(sched), 0));

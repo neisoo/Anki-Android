@@ -84,6 +84,9 @@
     <item>標籤</item>
     <item>答錯次數</item>
     <item>複習次數</item>
+    <item>複習間隔</item>
+    <item>下次復習時間</item>
+
     <!--
     <item>Changed</item>
     <item>Created</item>
@@ -93,6 +96,11 @@
     <item>Interval</item>
         -->
   </string-array>
+  <string name="browser_card_type_new">新卡片</string>
+  <string name="browser_card_type_learning">學習卡片</string>
+  <string name="browser_card_date_format">yyyy年MM月dd日</string>
+  <string name="browser_card_review_time_format">%1$s（%2$s）</string>
+
   <!-- Custom study options -->
   <string name="custom_study_increase_new_limit">增加今日新卡片上限</string>
   <string name="custom_study_increase_review_limit">增加今日複習卡片上限</string>

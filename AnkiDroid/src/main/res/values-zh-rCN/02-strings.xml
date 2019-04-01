@@ -82,8 +82,10 @@
     <item>笔记</item>
     <item>问题</item>
     <item>标签</item>
-    <item>失误</item>
-    <item>复习</item>
+    <item>答错次数</item>
+    <item>复习次数</item>
+    <item>复习间隔</item>
+    <item>下次复习时间</item>
     <!--
     <item>Changed</item>
     <item>Created</item>
@@ -93,6 +95,11 @@
     <item>Interval</item>
         -->
   </string-array>
+  <string name="browser_card_type_new">新卡片</string>
+  <string name="browser_card_type_learning">学习卡片</string>
+  <string name="browser_card_date_format">yyyy年MM月dd日</string>
+  <string name="browser_card_review_time_format">%1$s（%2$s）</string>
+
   <!-- Custom study options -->
   <string name="custom_study_increase_new_limit">增加今天的新卡片数量</string>
   <string name="custom_study_increase_review_limit">增加今天的复习数量</string>

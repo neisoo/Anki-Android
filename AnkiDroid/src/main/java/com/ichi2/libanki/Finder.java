@@ -1078,6 +1078,10 @@ public class Finder {
                 String tags = cur.getString(4);
                 map.put("flags", Integer.toString((queue == -1 ? 1 : 0) + (tags.matches(".*[Mm]arked.*") ? 2 : 0)));
                 map.put("tags", tags);
+                // ZYH: 增加卡片类型、间隔天数、排期信息。
+                map.put("type", Integer.toString(cur.getInt(5)));
+                map.put("ivl", Integer.toString(cur.getInt(6)));
+                map.put("due", Integer.toString(cur.getInt(7)));
                 res.add(map);
                 // add placeholder for question and answer
                 map.put("question", "");
@@ -1102,7 +1106,7 @@ public class Finder {
      * A copy of _query() with a custom SQL query specific to the AnkiDroid card browser.
      */
     private String _queryForCardBrowser(String preds, String order) {
-        String sql = "select c.id, n.sfld, c.did, c.queue, n.tags from cards c, notes n where c.nid=n.id and ";
+        String sql = "select c.id, n.sfld, c.did, c.queue, n.tags, c.type, c.ivl, c.due from cards c, notes n where c.nid=n.id and ";
         // combine with preds
         if (!TextUtils.isEmpty(preds)) {
             sql += "(" + preds + ")";
